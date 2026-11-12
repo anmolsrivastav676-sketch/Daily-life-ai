@@ -1,0 +1,12 @@
+{
+  "name": "daily-life-ai-shopping-agent",
+  "version": "4.0.0",
+  "private": true,
+  "description": "PriceInIndia-powered read-only shopping comparison backend",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

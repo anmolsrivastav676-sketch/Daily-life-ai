@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080d1b"><title>DAILY LIFE AI — Shopping Agent V4</title>
+<style>
+:root{--bg:#080d1b;--panel:#121d33;--line:#2a3b59;--txt:#f0f5ff;--muted:#9eafca;--violet:#9185ff;--cyan:#43d7ee;--green:#48d6a3}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 10% 0%,#29235d 0,transparent 38%),radial-gradient(ellipse at 100% 15%,#12404c 0,transparent 30%),var(--bg);color:var(--txt);font:15px system-ui,sans-serif}
+header,main{max-width:1000px;margin:auto;padding:18px}header{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--violet),var(--cyan));font-size:24px}h1{font-size:18px;margin:0}small,.muted{color:var(--muted)}.hero,.card{border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,#172541,#10192b);padding:20px;margin-bottom:15px}.hero{background:linear-gradient(120deg,#332a72,#17475a)}h2{margin:7px 0 8px;font-size:clamp(23px,5vw,34px)}p{line-height:1.55}.field{margin:12px 0}.field label{display:block;color:#c4d1e7;font-size:12px;font-weight:700;margin-bottom:7px}input{width:100%;padding:14px;border-radius:13px;border:1px solid var(--line);background:#0a1426;color:white;font:inherit;outline:none}input:focus{border-color:var(--violet)}.row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}button{border:0;border-radius:13px;padding:13px 17px;color:white;font-weight:800;background:linear-gradient(100deg,var(--violet),#578cff);font:inherit;cursor:pointer}.search{width:100%;margin-top:5px}.status{font-size:12px;color:#aef3dc;margin-top:12px;min-height:20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.product{background:#0a1426;border:1px solid var(--line);border-radius:17px;padding:14px;min-width:0}.product img{width:100%;height:145px;object-fit:contain;background:white;border-radius:11px}.product h3{font-size:14px;line-height:1.4;min-height:40px}.price{font-size:23px;font-weight:900;color:var(--green)}.meta{font-size:12px;color:var(--muted);line-height:1.6}.link{display:inline-block;color:#b8c5ff;margin-top:10px;text-decoration:none;font-weight:700}.pill{display:inline-block;font-size:11px;padding:5px 8px;background:#1d3150;border-radius:99px;margin:4px 3px 0 0}.best{border-color:#48d6a3;box-shadow:0 0 0 1px #48d6a344}.note{font-size:12px;color:#ffdda6;background:#332a1a;border:1px solid #6b5027;border-radius:13px;padding:12px;line-height:1.5}.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:15px}
+@media(max-width:650px){.row{grid-template-columns:1fr 1fr}.row .wide{grid-column:span 2}header,main{padding:14px}.hero,.card{padding:16px}}
+</style></head><body>
+<header><div class="logo">✦</div><div><h1>DAILY LIFE AI <span style="color:#aaa0ff">SHOPPING V4</span></h1><small>Smart product discovery · India</small></div></header>
+<main><section class="hero"><div style="font-size:12px;letter-spacing:1.5px;color:#d1ccff;font-weight:800">AUTONOMOUS SHOPPING AGENT</div><h2>आप बताओ क्या चाहिए।<br>तुलना हम करेंगे।</h2><p>प्रोडक्ट खोजें और उपलब्ध भारतीय स्टोर्स की कीमत, छूट, ब्रांड और लिस्टिंग एक ही जगह देखें।</p></section>
+<section class="card"><h2>🛍️ क्या खरीदना है?</h2><div class="row"><div class="field wide"><label>प्रोडक्ट / मॉडल</label><input id="q" placeholder="जैसे: school backpack 25L"></div><div class="field"><label>बजट ₹ (वैकल्पिक)</label><input id="budget" type="number" min="1" placeholder="800"></div><div class="field"><label>ब्रांड (वैकल्पिक)</label><input id="brand" placeholder="कोई भी"></div></div><button class="search" id="go" onclick="search()">✦ पूरे स्टोर में खोजें</button><div id="status" class="status">Backend से कनेक्शन की प्रतीक्षा…</div></section>
+<section class="card"><h2>🏆 आपके लिए मिले विकल्प</h2><p class="muted" id="summary">सर्च करने पर प्रोडक्ट की लिस्ट यहाँ दिखेगी।</p><div id="results" class="empty">अभी कोई खोज नहीं हुई।</div></section>
+<section class="note">डेटा स्रोत: PriceInIndia — 100+ भारतीय रिटेलर्स के लिस्टिंग डेटा का read-only सर्च। कीमतें लगभग हर घंटे रीफ्रेश होती हैं; डिलीवरी, कूपन और बैंक ऑफर शामिल नहीं हो सकते। यह सेवा ऑर्डर या भुगतान नहीं करती। API में हर प्रोडक्ट की रेटिंग/रिव्यू उपलब्ध होना जरूरी नहीं, इसलिए ऐप नकली क्वालिटी स्कोर नहीं बनाएगा। एक जैसे SKU/वेरिएंट की पुष्टि करें।</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+function getProducts(data){if(Array.isArray(data.products))return data.products;if(Array.isArray(data.items))return data.items;if(Array.isArray(data.results))return data.results;return []}
+function money(n){let x=Number(n);return Number.isFinite(x)?'₹'+x.toLocaleString('en-IN'):'कीमत उपलब्ध नहीं'}
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function search(){
+ const query=$('q').value.trim(), maxPrice=$('budget').value, brand=$('brand').value.trim();
+ if(query.length<2){$('status').textContent='कम-से-कम 2 अक्षरों का प्रोडक्ट नाम लिखें।';return}
+ $('go').disabled=true;$('go').textContent='खोज रहे हैं…';$('status').textContent='100+ स्टोर्स के उपलब्ध डेटा में खोज जारी है…';$('results').className='empty';$('results').textContent='कृपया प्रतीक्षा करें…';
+ try{
+  const payload={query,...(maxPrice?{maxPrice:Number(maxPrice)}:{}),...(brand?{brand}:{})};
+  const [a,b]=await Promise.all([fetch('/api/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}),fetch('/api/compare',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query,brand})})]);
+  const sj=await a.json();const cj=await b.json();if(!a.ok)throw new Error(sj.error||'सर्च विफल');if(!cj.ok)throw new Error(cj.error||'तुलना विफल');
+  const products=getProducts(sj.data);const offers=Array.isArray(cj.data.offers)?cj.data.offers:[];
+  render(products,offers,query);
+  $('status').textContent='खोज पूरी · '+new Date().toLocaleTimeString('hi-IN');
+ }catch(e){$('status').textContent='कनेक्शन समस्या: '+e.message;$('results').className='empty';$('results').textContent='डेटा नहीं मिला। Backend चल रहा है या नहीं जाँचें।'}
+ finally{$('go').disabled=false;$('go').textContent='✦ फिर से खोजें'}
+}
+function render(products,offers,query){
+ const all=[...products];const seen=new Set(all.map(p=>String(p.id||p.productUrl||p.title)));
+ for(const o of offers){const k=String(o.id||o.productUrl||o.title);if(!seen.has(k)){all.push(o);seen.add(k)}}
+ all.sort((a,b)=>(Number(a.price)||Infinity)-(Number(b.price)||Infinity));
+ $('summary').textContent=`"${query}" के ${all.length} उपलब्ध विकल्प मिले। कीमत के आधार पर कम से ज्यादा क्रम में।`;
+ if(!all.length){$('results').className='empty';$('results').textContent='इस शब्द से कोई लिस्टिंग नहीं मिली। अधिक विशिष्ट ब्रांड या मॉडल लिखकर खोजें।';return}
+ $('results').className='grid';
+ $('results').innerHTML=all.slice(0,20).map((p,i)=>{const title=p.title||p.name||'प्रोडक्ट';const price=p.price??p.currentPrice;const store=p.store||p.retailer||'स्टोर जानकारी नहीं';const url=p.productUrl||p.productPageUrl||p.url;const img=p.imageUrl||p.image;const mrp=p.mrp;const disc=p.discountPercent;return `<article class="product ${i===0?'best':''}">${img?`<img src="${safe(img)}" loading="lazy" alt="">`:''}<span class="pill">${i===0?'सबसे कम कीमत':''}</span><h3>${safe(title)}</h3><div class="price">${money(price)}</div><div class="meta">स्टोर: ${safe(store)}<br>${mrp?`MRP: ${money(mrp)}<br>`:''}${disc?`छूट: ${safe(disc)}%<br>`:''}कीमत अपडेट: स्रोत के अनुसार</div>${url?`<a class="link" href="${safe(url)}" target="_blank" rel="noopener">प्रोडक्ट विवरण / डील ↗</a>`:''}</article>`}).join('');
+}
+</script></body></html>
